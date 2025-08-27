@@ -9,7 +9,7 @@ baseapi="/api/v2"
 
 # TF_TOKEN_app_terraform_io
 token=os.environ["TFC_TOKEN"]
-orgname="carlos-villegas-sandbox"
+orgname=os.environ["TFC_ORG_NAME"]
 
 def getWorkspaceId(workspacedict):
     return workspacedict['id']
@@ -30,19 +30,12 @@ def listWorkspaces(tfce, orgname, page = 0, prevdata = []):
         params = urllib.parse.urlencode({})
     headers = {"Accept":"application/json", "Authorization": "Bearer "+token}
     conn = http.client.HTTPSConnection(tfce)
-    #print(params)
     conn.request("GET", baseapi+"/organizations/"+orgname+"/workspaces?"+params,"",headers)
     res = conn.getresponse()
-    #print(res.status, res.reason)
     data = res.read()
-    #print(len(data))
-    #print(data)
     jdata=json.loads(data)
-    #workspaces=list(map(getWorkspaceId, jdata["data"]))
     workspaces=list(jdata["data"])
-    #print(workspaces)
     next_page=jdata["meta"]["pagination"]["next-page"]
-    #print(next_page)
     if next_page != None:
         time.sleep(0.05)
         return listWorkspaces(tfce, orgname, next_page, prevdata+workspaces)
@@ -61,14 +54,12 @@ def getCurrentStateVersion(tfce, orgname, wsid):
     currentState=getResources(jdata["data"])
     return currentState
 
-workspaces=listWorkspaces(tfce, orgname)
-
-#workspaceIds=list(map(getWorkspaceId, workspaces))
-#print(workspaceIds)
-
 def printResourceLines(orgname, wsid, resources):
     for res in resources:
         print(tfce+","+orgname+","+wsid+","+res['type']+"\n")
+
+
+workspaces=listWorkspaces(tfce, orgname)
 
 for ws in workspaces:
     wsid=getWorkspaceId(ws)
