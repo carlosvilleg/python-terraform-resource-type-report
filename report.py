@@ -4,10 +4,14 @@ import os
 import urllib
 import time
 
-tfce="app.terraform.io"
 baseapi="/api/v2"
 
 # TF_TOKEN_app_terraform_io
+try:
+    tfce=os.environ["TF_HOST"]
+catch Exception:
+    tfce="app.terraform.io"
+
 token=os.environ["TFC_TOKEN"]
 orgname=os.environ["TFC_ORG_NAME"]
 
@@ -56,7 +60,7 @@ def getCurrentStateVersion(tfce, orgname, wsid):
 
 def printResourceLines(orgname, wsid, resources):
     for res in resources:
-        print(tfce+","+orgname+","+wsid+","+res['type']+"\n")
+        print(tfce+","+orgname+","+wsid+","+res['type'])
 
 
 workspaces=listWorkspaces(tfce, orgname)
