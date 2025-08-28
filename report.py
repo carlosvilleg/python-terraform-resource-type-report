@@ -9,7 +9,7 @@ baseapi="/api/v2"
 # TF_TOKEN_app_terraform_io
 try:
     tfce=os.environ["TF_HOST"]
-catch Exception:
+except Exception:
     tfce="app.terraform.io"
 
 token=os.environ["TFC_TOKEN"]
