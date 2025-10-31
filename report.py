@@ -21,6 +21,9 @@ def getWorkspaceId(workspacedict):
 def getWorkspaceName(workspacedict):
     return workspacedict['attributes']['name']
 
+def getWorkspaceTerraformVersion(workspacedict):
+    return workspacedict['attributes']['terraform-version']
+
 def getResources(stateversiondict):
     return stateversiondict['attributes']['resources']
 
@@ -58,9 +61,9 @@ def getCurrentStateVersion(tfce, orgname, wsid):
     currentState=getResources(jdata["data"])
     return currentState
 
-def printResourceLines(orgname, wsid, resources):
+def printResourceLines(orgname, wsid, tfversion, resources):
     for res in resources:
-        print(tfce+","+orgname+","+wsid+","+res['type'])
+        print(tfce+","+orgname+","+wsid+","+tfversion+","+res['type'])
 
 
 workspaces=listWorkspaces(tfce, orgname)
@@ -68,6 +71,7 @@ workspaces=listWorkspaces(tfce, orgname)
 for ws in workspaces:
     wsid=getWorkspaceId(ws)
     wsname=getWorkspaceName(ws)
+    wstfversion=getWorkspaceTerraformVersion(ws)
     time.sleep(0.05)
-    printResourceLines(orgname, wsname, getCurrentStateVersion(tfce, orgname, wsid))
+    printResourceLines(orgname, wsname, wstfversion, getCurrentStateVersion(tfce, orgname, wsid))
 
