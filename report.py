@@ -8,12 +8,12 @@ baseapi="/api/v2"
 
 # TF_TOKEN_app_terraform_io
 try:
-    tfce=os.environ["TF_HOST"]
+    tfce=os.environ["TFE_HOSTNAME"]
 except Exception:
     tfce="app.terraform.io"
 
-token=os.environ["TFC_TOKEN"]
-orgname=os.environ["TFC_ORG_NAME"]
+token=os.environ["TFE_TOKEN"]
+orgname=os.environ["TFE_ORGANIZATION"]
 
 def getWorkspaceId(workspacedict):
     return workspacedict['id']

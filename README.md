@@ -3,9 +3,9 @@
 
 Set the following environment variables:
 
-* TF_HOST defaults to "app.terraform.io" if not set
-* TF_TOKEN
-* TF_ORG_NAME
+* `TFE_HOSTNAME` defaults to "app.terraform.io" if not set
+* `TFE_TOKEN`
+* `TFE_ORGANIZATION`  the TFE organization name
 
 # Run
 
