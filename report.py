@@ -25,10 +25,16 @@ def getWorkspaceTerraformVersion(workspacedict):
     return workspacedict['attributes']['terraform-version']
 
 def getResources(stateversiondict):
-    return stateversiondict['attributes']['resources']
+    try:
+        return stateversiondict['attributes']['resources']
+    except:
+        return dict()
 
-def getModules(stateversiondict):
-    return stateversiondict['attributes']['modules']
+def getWorkspaceModules(stateversiondict):
+    try:
+        return stateversiondict['attributes']['modules']
+    except:
+        return dict()
 
 def listWorkspaces(tfce, orgname, page = 0, prevdata = []):
     if ( page != 0 ):
@@ -58,12 +64,17 @@ def getCurrentStateVersion(tfce, orgname, wsid):
         return []
     data = res.read()
     jdata=json.loads(data)
-    currentState=getResources(jdata["data"])
-    return currentState
+    #currentState=getResources(jdata["data"])
+    #return currentState
+    return jdata['data']
 
-def printResourceLines(orgname, wsid, tfversion, resources):
+def printResourceLines(orgname, wsid, tfversion, current_version):
+    wsmodules=getWorkspaceModules(current_version)
+    #module_use=";".join(wsmodules.keys())
+    module_use=str(len(wsmodules.keys()) > 1)
+    resources=getResources(current_version)
     for res in resources:
-        print(tfce+","+orgname+","+wsid+","+tfversion+","+res['type'])
+        print(tfce+","+orgname+","+wsid+","+tfversion+","+module_use+","+res['type'])
 
 
 workspaces=listWorkspaces(tfce, orgname)
