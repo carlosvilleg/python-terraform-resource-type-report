@@ -13,7 +13,8 @@ except Exception:
     tfce="app.terraform.io"
 
 token=os.environ["TFE_TOKEN"]
-orgname=os.environ["TFE_ORGANIZATION"]
+organizations=os.environ["TFE_ORGANIZATIONS"]
+#orgname=os.environ["TFE_ORGANIZATION"]
 
 def getWorkspaceId(workspacedict):
     return workspacedict['id']
@@ -77,12 +78,16 @@ def printResourceLines(orgname, wsid, tfversion, current_version):
         print(tfce+","+orgname+","+wsid+","+tfversion+","+module_use+","+res['type'])
 
 
-workspaces=listWorkspaces(tfce, orgname)
+def printOrganizationReport(tfce, orgname):
+    workspaces=listWorkspaces(tfce, orgname)
+    for ws in workspaces:
+        wsid=getWorkspaceId(ws)
+        wsname=getWorkspaceName(ws)
+        wstfversion=getWorkspaceTerraformVersion(ws)
+        time.sleep(0.05)
+        printResourceLines(orgname, wsname, wstfversion, getCurrentStateVersion(tfce, orgname, wsid))
 
-for ws in workspaces:
-    wsid=getWorkspaceId(ws)
-    wsname=getWorkspaceName(ws)
-    wstfversion=getWorkspaceTerraformVersion(ws)
-    time.sleep(0.05)
-    printResourceLines(orgname, wsname, wstfversion, getCurrentStateVersion(tfce, orgname, wsid))
+print("Hostname,Organization,Workspace,Terraform Version,Uses Modules,Resource Type")
+for orgname in organizations.split(","):
+    printOrganizationReport(tfce, orgname)
 
